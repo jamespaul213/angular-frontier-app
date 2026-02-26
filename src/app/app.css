@@ -1,0 +1,121 @@
+
+.comment-card {
+  width: 100%;
+  max-width: 800px;
+  margin: auto;
+}
+
+
+.textarea-border {
+  border: 2px solid #ccc;
+  border-radius: 6px;
+}
+
+.textarea-border:focus {
+  border: 2px solid #4430B0;
+}
+.comment-input textarea {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+
+  resize: none;
+  overflow: hidden;
+  min-height: 40px;
+}
+
+
+
+@media (min-width: 768px) {
+  .comment-card {
+    max-width: 800px;
+  }
+}
+
+@media(max-width: 768px){
+   .cornerItems{
+    position: absolute;
+    bottom: 18px;
+    right: 14px
+  }
+}
+
+@media (min-width: 1000px) {
+  .comment-card {
+    max-width: 900px;
+  }
+}
+
+
+.icon-clickable {
+  cursor: pointer;
+  user-select: none;
+  color: #4430B0;
+}
+
+.icon-clickable:hover {
+  opacity: 0.7;
+}
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #ED330E;
+  font-weight: 700;
+}
+
+.comment-textarea {
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+  min-height: 80px;
+  height: 120px;
+  max-height: 120px;
+  margin-bottom: 20px;
+}
+
+
+/* @media (min-width: 769px) {
+  .comment-textarea {
+    height: 120px;
+    max-height: 120px;
+    margin-bottom: 30px;
+  }
+} */
+
+/* Mobile layout */
+@media (max-width: 768px) {
+
+  .comment-input-wrapper {
+    position: relative;
+    padding-bottom: 100px;
+  }
+
+  .comment-avatar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .comment-send-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #4430B0;
+    color: white;
+    font-weight: bold;
+  }
+
+  .comment-textarea {
+    width: 100%;
+    
+  }
+
+  .comment-input-card {
+   position: relative;
+}
+}
