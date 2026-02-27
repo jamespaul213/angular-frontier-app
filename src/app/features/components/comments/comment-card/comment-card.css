@@ -1,0 +1,10 @@
+.icon-button {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #ED330E;
+  font-weight: 700;
+}

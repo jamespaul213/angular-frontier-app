@@ -1,0 +1,109 @@
+<div class="comment-card border rounded p-3 mb-3">
+
+  <!-- HEADER -->
+  <div class="d-flex align-items-center gap-2 mb-2">
+
+    <img
+      src="assets/avatars/vader.png"
+      width="40"
+      height="40"
+      class="rounded-circle"
+    />
+
+    <strong>{{ comment.user.username }}</strong>
+
+  </div>
+
+  <!-- CONTENT -->
+  <p class="mb-2">
+    {{ comment.content }}
+  </p>
+
+     <ng-container *ngIf="!isEdit">
+              <span class="material-icons icon-clickable"
+                    (click)="editComment()">
+                edit
+              </span>
+      </ng-container>
+
+         <div class="card-body"
+             *ngIf="isEdit">
+
+          <textarea
+            #editCommentBox
+            class="form-control mb-3 col-lg-2 textarea-border comment-textarea"
+            [(ngModel)]="editInputText"
+            (input)="autoGrow(editCommentBox)"
+            [placeholder]="comment.content">
+          </textarea>
+
+          <div class="d-flex justify-content-end gap-2">
+
+            <button (click)="saveComment(comment.id)"
+                    class="btn"
+                    style="background-color:#4430B0; color:white; font-weight: bold;">
+              UPDATE
+            </button>
+
+            <button class="icon-button"
+                    (click)="deleteComment(comment.id)">
+              <div class="d-flex align-items-center gap-1">
+                <span class="material-icons">delete</span>
+                <div>Delete</div>
+              </div>
+            </button>
+
+          </div>
+
+        </div>
+
+      
+
+  <!-- ACTIONS -->
+  <div class="d-flex gap-2 mb-2">
+
+    <button class="btn btn-sm btn-link p-0"
+            (click)="onReplyClick()">
+      Reply
+    </button>
+
+  </div>
+
+  <!-- INLINE REPLY FORM -->
+  <div *ngIf="replyingCommentId === comment.id" class="ms-4">
+
+    <textarea
+      class="form-control mb-2"
+      [(ngModel)]="replyText"
+      rows="3"
+      placeholder="Write a reply...">
+    </textarea>
+
+    <div class="text-end">
+
+      <button class="btn btn-secondary btn-sm me-2"
+              (click)="cancelReply()">
+        Cancel
+      </button>
+
+      <button class="btn btn-primary btn-sm"
+              (click)="submitReply(comment.id)">
+        Reply
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- RECURSIVE CHILD REPLIES ⭐ -->
+  <div *ngIf="comment.replies && comment.replies.length > 0"
+       class="ms-4 ps-3 border-start mt-3">
+
+    <app-comment-card
+      *ngFor="let reply of comment.replies"
+      [comment]="reply">
+    </app-comment-card>
+
+  </div>
+
+</div>
