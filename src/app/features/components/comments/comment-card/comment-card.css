@@ -1,3 +1,33 @@
+
+.comment-card {
+  width: 100%;
+  margin: auto;
+  box-sizing: border-box;
+}
+.card-body {
+  width: 100%;
+}
+
+.comment-textarea {
+   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  resize: none;
+  overflow-y: auto;
+
+  min-height: 80px;
+}
+.comment-input textarea {
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+
+  resize: none;
+  overflow: hidden;
+  min-height: 40px;
+}
+
 .icon-button {
   display: flex;
   align-items: center;
@@ -6,5 +36,47 @@
   background: none;
   cursor: pointer;
   color: #ED330E;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+
+.textarea-border {
+  border: 2px solid #ccc;
+  border-radius: 6px;
+}
+
+.textarea-border:focus {
+  border: 2px solid #4430B0;
+}
+
+.icon-clickable {
+  cursor: pointer;
+  user-select: none;
+  color: #4430B0;
+}
+
+.icon-clickable:hover {
+  opacity: 0.7;
+}
+
+
+
+@media (max-width: 768px) {
+    .comment-textarea {
+    width: 100%;
+  }
+}
+
+
+.comment-header-grid {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 1rem;
+  align-items: start;
+}
+
+
+.action-items {
+  width: 0px;
 }

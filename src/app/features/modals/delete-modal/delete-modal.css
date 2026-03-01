@@ -12,6 +12,7 @@
   overflow: hidden !important;
 }
 
+
 .delete-dialog .mat-mdc-dialog-container {
   max-width: none !important;
   width: 600px !important;

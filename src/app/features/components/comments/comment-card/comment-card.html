@@ -1,79 +1,130 @@
-<div class="comment-card border rounded p-3 mb-3">
+<div class="comment-card border rounded p-3 mb-2">
 
   <!-- HEADER -->
-  <div class="d-flex align-items-center gap-2 mb-2">
+  <div class="comment-header-grid mb-2">
 
-    <img
-      src="assets/avatars/vader.png"
-      width="40"
-      height="40"
-      class="rounded-circle"
-    />
+    <!-- LEFT: Vote Column -->
+    <div style="width: 40px"
+       class="d-flex flex-column align-items-center rounded p-2 flex-shrink-0">
 
-    <strong>{{ comment.user.username }}</strong>
 
-  </div>
+      <span class="material-icons icon-clickable mb-4"
+            (click)="upvote(comment.id)">add</span>
 
-  <!-- CONTENT -->
-  <p class="mb-2">
-    {{ comment.content }}
-  </p>
+      <div class="fw-bold mb-4">
+        {{ comment.score }}
+      </div>
 
-     <ng-container *ngIf="!isEdit">
-              <span class="material-icons icon-clickable"
-                    (click)="editComment()">
-                edit
-              </span>
-      </ng-container>
+      <span class="material-icons icon-clickable"
+            (click)="downvote(comment.id)">remove</span>
 
-         <div class="card-body"
-             *ngIf="isEdit">
+    </div>
 
-          <textarea
-            #editCommentBox
-            class="form-control mb-3 col-lg-2 textarea-border comment-textarea"
-            [(ngModel)]="editInputText"
-            (input)="autoGrow(editCommentBox)"
-            [placeholder]="comment.content">
-          </textarea>
+    <!-- MIDDLE: Username + Content -->
+   <div class="flex-grow-1 px-3 d-flex flex-column"
+     style="min-width: 0;">
 
-          <div class="d-flex justify-content-end gap-2">
+      <div class="d-flex align-items-center gap-2 mb-3">
 
-            <button (click)="saveComment(comment.id)"
-                    class="btn"
-                    style="background-color:#4430B0; color:white; font-weight: bold;">
-              UPDATE
-            </button>
+        <img [src]="comment.user.image.png"
+             width="40"
+             height="40"
+             class="rounded-circle" />
 
+        <strong>{{ comment.user.username }}</strong>
+
+        <small class="text-muted">
+          {{ timeAgo }}
+        </small>
+
+      </div>
+
+      <!-- COMMENT CONTENT -->
+      <p class="mb-0 text-wrap"
+         style="word-break: break-word"
+         *ngIf="!isEdit">
+
+        {{ comment.content }}
+
+      </p>
+
+      <!-- EDIT TEXTAREA -->
+      <div class="w-100" *ngIf="isEdit">
+
+        <textarea
+          #editCommentBox
+            class="form-control mb-4 ms-2 textarea-border comment-textarea w-100"
+          [(ngModel)]="editInputText"
+          (input)="autoGrow(editCommentBox)"
+          [placeholder]="comment.content">
+        </textarea>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT: ACTIONS -->
+    <div class="action-items flex-shrink-0 d-flex align-items-start justify-content-end">
+
+      <ng-container *ngIf="(Users$ | async)?.username === comment.user.username; else elseBlock">
+
+        <div class="comment-actions d-flex gap-2">
+
+          <!-- DELETE (only in edit mode) -->
+          <div *ngIf="isEdit">
             <button class="icon-button"
-                    (click)="deleteComment(comment.id)">
+                    (click)="deleteRequest.emit(comment.id)">
               <div class="d-flex align-items-center gap-1">
                 <span class="material-icons">delete</span>
                 <div>Delete</div>
               </div>
             </button>
-
           </div>
+
+          <!-- EDIT -->
+          <span class="material-icons icon-clickable"
+                (click)="editComment(comment.id)">
+            edit
+          </span>
 
         </div>
 
-      
+      </ng-container>
 
-  <!-- ACTIONS -->
-  <div class="d-flex gap-2 mb-2">
+      <!-- OTHER USERS → Reply -->
+      <ng-template #elseBlock>
+        <div class="d-flex align-items-center gap-1 icon-clickable"
+             (click)="onReplyClick(comment.id)">
+          <span class="material-icons">reply</span>
+          <span>Reply</span>
+        </div>
+      </ng-template>
 
-    <button class="btn btn-sm btn-link p-0"
-            (click)="onReplyClick()">
-      Reply
-    </button>
+    </div>
+
+  </div>
+  <!-- END HEADER -->
+
+  <!-- EDIT FOOTER ACTION -->
+  <div class="card-body" *ngIf="isEdit">
+
+    <div class="d-flex justify-content-end gap-2">
+
+      <button (click)="saveComment(comment.id)"
+              class="btn"
+              style="background-color:#4430B0; color:white; font-weight: bold;">
+        UPDATE
+      </button>
+
+    </div>
 
   </div>
 
   <!-- INLINE REPLY FORM -->
-  <div *ngIf="replyingCommentId === comment.id" class="ms-4">
+  <div *ngIf="selectedReplyParentId === comment.id" class="ms-5 me-4">
 
     <textarea
-      class="form-control mb-2"
+      class="form-control mb-2 textarea-border"
       [(ngModel)]="replyText"
       rows="3"
       placeholder="Write a reply...">
@@ -82,11 +133,13 @@
     <div class="text-end">
 
       <button class="btn btn-secondary btn-sm me-2"
+              style="color:white; font-weight: bold;"
               (click)="cancelReply()">
         Cancel
       </button>
 
-      <button class="btn btn-primary btn-sm"
+      <button class="btn btn-sm"
+              style="background-color:#4430B0; color:white; font-weight: bold;"
               (click)="submitReply(comment.id)">
         Reply
       </button>
@@ -95,13 +148,15 @@
 
   </div>
 
-  <!-- RECURSIVE CHILD REPLIES ⭐ -->
+  <!-- RECURSIVE CHILD REPLIES -->
   <div *ngIf="comment.replies && comment.replies.length > 0"
        class="ms-4 ps-3 border-start mt-3">
 
     <app-comment-card
       *ngFor="let reply of comment.replies"
-      [comment]="reply">
+      [comment]="reply"
+      (deleteRequest)="deleteRequest.emit($event)"
+      (replyRequest)="replyRequest.emit($event)">
     </app-comment-card>
 
   </div>

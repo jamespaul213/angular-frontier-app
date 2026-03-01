@@ -4,11 +4,12 @@
 
     <div class="col-12 col-md-8 col-lg-7">
         <app-comment-list
-        [comments]="(comments$ | async) ?? []">
+        [comments]="(comments$ | async) ?? []"
+         (deleteRequest)="openDeleteModal($event)"
+         (replyRequest)="openReply($event)">
         </app-comment-list>
-
     </div>
   </div> 
 </div>
 
-
+<app-create-comment></app-create-comment>

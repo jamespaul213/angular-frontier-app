@@ -13,5 +13,24 @@ export interface Comment {
   createdAt: string;
   score: number;
   user: CommentUser;
-  replies: Comment[];
+  replies?: Comment[];
+}
+
+export interface User {
+  id: number;
+  username: string;
+  image: {
+    png: string;
+  };
+}
+
+export interface UserData {
+  username: string;
+  image?: any;
+}
+
+export interface CommentData {
+  currentUser: UserData;
+  users: UserData[];
+  comments: Comment[];
 }

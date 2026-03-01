@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Output, Input } from '@angular/core';
-import { Store } from '@ngxs/store';
 
 import { Comment } from '../../store/comment/comment.model';
 import { CommonModule } from '@angular/common';
@@ -15,16 +14,17 @@ export class CommentList {
 
   replyingComment: Comment | null = null;
   @Input() comments: Comment[] = [];
-  @Output() reply = new EventEmitter<Comment>();
+  @Output() replyRequest = new EventEmitter<Comment>();
+  @Output() deleteRequest = new EventEmitter<number>();
 
-  constructor(private store: Store) {}
+  constructor() {}
 
   openReplyModal(comment: Comment) {
     this.replyingComment = comment;
   }
 
   onReplyClick(comment: Comment) {
-    this.reply.emit(comment);
+    this.replyRequest.emit(comment);
   }
 
 }

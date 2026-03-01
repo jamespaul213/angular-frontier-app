@@ -1,14 +1,19 @@
-<div class="p-4">
+<div class="container d-flex justify-content-center align-items-center">
+  <div class="card p-3 shadow-sm" style="width: 280px;">
+    
+    <h6 class="text-center mb-3">Login</h6>
 
-  <h3>Login</h3>
+    <input
+      class="form-control form-control-sm mb-2"
+      [(ngModel)]="username"
+      placeholder="Enter username">
 
-  <input
-    class="form-control mb-2 w-50"
-    [(ngModel)]="username"
-    placeholder="Enter username">
+    <button 
+      class="btn btn-sm w-100"
+      style="background-color:#4430B0; color:white; font-weight: bold;"
+      (click)="login()">
+      Login
+    </button>
 
-  <button class="btn btn-primary" (click)="login()">
-    Login
-  </button>
-
+  </div>
 </div>

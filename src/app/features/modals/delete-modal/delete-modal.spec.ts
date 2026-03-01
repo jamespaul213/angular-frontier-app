@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CommentForm } from './comment-form';
+import { DeleteModal } from './delete-modal';
 
-describe('CommentForm', () => {
-  let component: CommentForm;
-  let fixture: ComponentFixture<CommentForm>;
+describe('DeleteModal', () => {
+  let component: DeleteModal;
+  let fixture: ComponentFixture<DeleteModal>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommentForm]
+      imports: [DeleteModal]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(CommentForm);
+    fixture = TestBed.createComponent(DeleteModal);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });

@@ -4,6 +4,9 @@ import { Store } from '@ngxs/store';
 import { FormsModule } from '@angular/forms';
 import { CommentService } from '../../core/services/comment-service';
 import { Comment } from '../../features/components/store/comment/comment.model';
+import getAllUsers from '../../core/helpers/getAllUsers';
+import getUserImage from '../../core/helpers/getUserImage';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -19,39 +22,53 @@ export class Login {
 }
 
 
-constructor(private store: Store, private commentService: CommentService) {
+constructor(private store: Store, private commentService: CommentService, private router: Router) {
   
 }
 
 login() {
-  // if (!this.username.trim()) return;
+
+  if (!this.username.trim()) return;
+  
 
   this.commentService.getUsers().subscribe((data: any) => {
 
-  console.log('Data from service:', data); // Debugging log 
-  const users = Array.isArray(data.users) ? data.users : [];
+    const allUsers = getAllUsers(data);
 
-  const validUser = users.some(
-    (u: any) => u.username === this.username.trim()
-  );
+    const foundUser = allUsers.find(
+      user => user.username.toLowerCase() === this.username.trim().toLowerCase()
+    );
 
-
-    if (!validUser) {
+    if (!foundUser) {
       alert("Login error: Username not found");
       return;
     }
+    localStorage.setItem(
+  'currentUser',
+  JSON.stringify({
+    id: foundUser.id,
+    username: foundUser.username,
+    image: {
+      png: getUserImage(foundUser.username)
+    }
+  })
+);
+    // Dispatch to NGXS
+    this.store.dispatch(
+      new SetCurrentUser({
+        id: foundUser.id,
+        username: foundUser.username,
+        image: {
+          png: getUserImage(foundUser.username)
+        }
+      })
+    );
 
-    // this.store.dispatch(
-    //   new SetCurrentUser({
-    //     id: Date.now(),
-    //     username: data.currentUser.username
-    //   })
-    // );
-
-    console.log("Logged in as:", this.username);
+    console.log("Logged in as:", foundUser.username);
+    this.router.navigate(['/comments']);
 
     this.username = '';
+
   });
 }
-
 }

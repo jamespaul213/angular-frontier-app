@@ -1,0 +1,49 @@
+<div class="container-sm py-3">
+  <!-- NEW COMMENT BOX -->
+  <div class="row justify-content-center mt-1">
+
+    <div class="col-12 col-md-8 col-lg-7 mx-auto">
+
+      <div class="card p-3 comment-input-card">
+
+        <div class="d-flex align-items-start gap-3 comment-input-wrapper">
+
+          <!-- Avatar -->
+           <div *ngIf="currentUser$ | async as user">
+          <div>
+            <img [src]="user.image?.png"
+                 width="40"
+                 height="40"
+                 class="rounded-circle comment-avatar" />
+          </div>
+          </div>
+
+          <!-- Textarea -->
+          <div class="flex-grow-1">
+            <textarea
+              #commentBox
+              class="form-control textarea-border comment-textarea"
+              [(ngModel)]="commentText"
+              (input)="autoGrow(commentBox)"
+              [placeholder]="isReplyMode ? 'Replying...' : 'Add a comment...'">
+            </textarea>
+          </div>
+
+          <!-- Send Button -->
+          <div>
+            <button class="btn comment-send-btn"
+                    (click)="addComment()"
+                    style="background-color:#4430B0; color:white; font-weight: bold;">
+              Send
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

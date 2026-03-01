@@ -1,23 +1,68 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CommentCardComponent } from './comment-card';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { Store } from '@ngxs/store';
+import { of } from 'rxjs';
+import { Comment } from '../../store/comment/comment.model';
+import { EditComment } from '../../store/comment/comment.action';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { CommentCard } from './comment-card';
+class MockStore {
+  dispatch = vi.fn();
+  select = vi.fn().mockReturnValue(of(null));
+  selectSnapshot = vi.fn().mockReturnValue({ comments: [] });
+}
 
-describe('CommentCard', () => {
-  let component: CommentCard;
-  let fixture: ComponentFixture<CommentCard>;
+describe('CommentCardComponent – saveComment only', () => {
+  let component: CommentCardComponent;
+  let fixture: ComponentFixture<CommentCardComponent>;
+  let store: MockStore;
+
+  const dummy: Comment = {
+    id: 1,
+    content: 'foo',
+    createdAt: '',
+    score: 0,
+    user: { username: 'u', image: { png: '' } },
+    replies: []
+  };
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CommentCard]
-    })
-    .compileComponents();
+      imports: [CommentCardComponent, FormsModule, CommonModule],
+      providers: [{ provide: Store, useClass: MockStore }],
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(CommentCard);
+    fixture = TestBed.createComponent(CommentCardComponent);
     component = fixture.componentInstance;
-    await fixture.whenStable();
+    store = TestBed.inject(Store) as unknown as MockStore;
+
+    component.comment = { ...dummy };
+    fixture.detectChanges(); // runs ngOnInit
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('alerts when text unchanged', () => {
+    vi.spyOn(window, 'alert');
+    component.originalComment = 'same';
+    component.editInputText = 'same';
+    component.comment.content = 'same';
+
+    component.saveComment(dummy.id);
+
+    expect(window.alert).toHaveBeenCalledWith('You did not make any changes');
+    expect(store.dispatch).not.toHaveBeenCalled();
+  });
+
+  it('dispatches EditComment when text changed', () => {
+    component.originalComment = 'old';
+    component.editInputText = 'new text';
+    component.comment.content = 'old';
+
+    component.saveComment(dummy.id);
+
+    expect(store.dispatch).toHaveBeenCalledWith(expect.any(EditComment));
+    expect(component.isEdit).toBe(false);
+    expect(component.editInputText).toBe('');
   });
 });
